@@ -27,6 +27,9 @@ jobs:
        python -m pip install -r requirements.txt
        python -m pip install -U "transformers[torch]" accelerate
 
+    - name: Check threshod installation
+      run: python -c "import os; THRESHOLD = float(os.getenv('THRESHOLD_SCORE')); print('✅ threshold:', THRESHOLD)"
+
     - name: model training 
       run: python scripts/train.py
 
