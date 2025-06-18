@@ -2,7 +2,6 @@ import json
 from huggingface_hub import Repository, login
 import os
 from shutil import copytree, rmtree
-from google.colab import userdata
 # --- Load Evaluation Scores ---
 with open("results.json", "r") as f:
     results = json.load(f)
@@ -18,7 +17,7 @@ if accuracy >= THRESHOLD and f1 >= THRESHOLD:
     print(f"✅ Scores are good (accuracy: {accuracy:.4f}, f1: {f1:.4f}). Starting deployment...")
 
     # --- Hugging Face setup ---
-    hf_token = userdata.get("HF_TOKEN")
+    hf_token = os.environ["HF_TOKEN"]
     repo_id = "danielle2003/sentiment-analysis"  # ⚠️ REPLACE with your actual repo ID
 
     if not hf_token:
