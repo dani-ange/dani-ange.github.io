@@ -11,7 +11,7 @@ with open("results.json", "r") as f:
 accuracy = results.get("accuracy", 0)
 f1_score = results.get("f1_score", 0)
 
-THRESHOLD = float(os.getenv("THRESHOLD_SCORE", "0.0000"))
+THRESHOLD = 0.0000
 
 if accuracy >= THRESHOLD or f1_score >= THRESHOLD:
     print(f"Scores are good (accuracy: {accuracy:.4f}, f1: {f1_score:.4f}). Starting deployment...")
