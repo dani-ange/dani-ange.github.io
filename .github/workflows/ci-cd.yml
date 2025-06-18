@@ -27,14 +27,14 @@ jobs:
        python -m pip install -r requirements.txt
 
     - name: model training 
-      run: scripts/train.py
+      run: python scripts/train.py
 
     - name: model evaluation
-      run: scripts/evaluate.py
+      run: python scripts/evaluate.py
 
     - name: model check and deployment
-      run : scripts/deploy.py
+      run : python scripts/deploy.py
     
     - name: mail sending 
-      run : scripts/send_email.py
+      run : python scripts/send_email.py
 
