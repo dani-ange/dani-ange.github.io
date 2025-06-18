@@ -4,7 +4,7 @@ on:
  push: 
   branches: [main,dev]
 jobs:
- build and deploy:
+ build_and_deploy:
   runs-on: ubuntu-latest
   env:
    THRESHOLD_SCORE: ${{secrets.THRESHOLD_SCORE}}
@@ -12,8 +12,7 @@ jobs:
    EMAIL_USER: ${{secrets.EMAIL_USER}}
    EMAIL_PASS: ${{secrets.EMAIL_PASS}}
    EMAIL_RECEIVER: ${{secrets.EMAIL_RECEIVER}}
-
-   steps:
+  steps:
     - name: checkout repo
       uses: actions/checkout@v3
 
