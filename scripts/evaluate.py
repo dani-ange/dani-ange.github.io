@@ -1,5 +1,12 @@
 # scripts/evaluate.py
+"""
+evaluate.py
 
+This script evaluates a fine-tuned DistilBERT model on the IMDb test dataset.
+It computes accuracy and weighted F1-score using sklearn, and saves the results to `results.json`.
+
+Assumes the model and tokenizer are saved under ./models/distilbert-sentiment.
+"""
 from datasets import load_dataset
 from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
 from sklearn.metrics import accuracy_score, f1_score
@@ -8,8 +15,7 @@ import json
 
 # Load test data
 dataset = load_dataset("imdb")
-dataset = dataset.shuffle(seed=42).train_test_split(test_size=0.2)
-test_dataset = dataset["test"]
+test_dataset = dataset["test"].select(range(10))
 
 # Load model and tokenizer
 model_path = "./models/distilbert-sentiment"
@@ -18,6 +24,15 @@ model = DistilBertForSequenceClassification.from_pretrained(model_path)
 
 # Tokenize test set
 def tokenize(batch):
+    """
+    Tokenizes a batch of text samples using the loaded tokenizer.
+
+    Args:
+        batch (dict): A dictionary with a "text" key containing list of strings.
+
+    Returns:
+        dict: A dictionary with tokenized input_ids and attention_mask.
+    """
     return tokenizer(batch["text"], padding=True, truncation=True)
 
 test_dataset = test_dataset.map(tokenize, batched=True)

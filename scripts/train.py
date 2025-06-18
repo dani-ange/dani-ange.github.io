@@ -2,15 +2,16 @@ from datasets import load_dataset
 from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification, Trainer, TrainingArguments
 import torch
 import os
+from sklearn.metrics import accuracy_score, f1_score
 
 # Load dataset
 dataset = load_dataset("imdb")
 
 # Split the original train set into train/validation
-train_valid_split = dataset["train"].train_test_split(test_size=0.2, seed=42).select(range(10))
-train_dataset = train_valid_split["train"]
-valid_dataset = train_valid_split["test"]
-test_dataset = dataset["test"].select(range(5))  # use this only for final testing
+train_valid_split = dataset["train"].train_test_split(test_size=0.2, seed=42)
+train_dataset = train_valid_split["train"].select(range(10))
+valid_dataset = train_valid_split["test"].select(range(10))
+test_dataset = dataset["test"].select(range(10))  # use this only for final testing
 
 # Tokenizer
 tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
@@ -23,6 +24,13 @@ valid_dataset = valid_dataset.map(tokenize, batched=True)
 
 # Load model
 model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
+def compute_metrics(eval_pred):
+    logits, labels = eval_pred
+    predictions = logits.argmax(axis=-1)
+    return {
+        "accuracy": accuracy_score(labels, predictions),
+        "f1": f1_score(labels, predictions, average="weighted"),
+    }
 
 # Training args
 training_args = TrainingArguments(
@@ -45,6 +53,8 @@ trainer = Trainer(
     args=training_args,
     train_dataset=train_dataset,
     eval_dataset=valid_dataset,
+    compute_metrics=compute_metrics,  # <-- add this line
+
 )
 
 # Train and save model
