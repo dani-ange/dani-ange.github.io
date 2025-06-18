@@ -6,9 +6,9 @@ from email.message import EmailMessage
 import json
 
 def send_email(subject, body):
-    EMAIL_USER = os.getenv("EMAIL_USER")
-    EMAIL_PASS = os.getenv("EMAIL_PASS")
-    EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
+    EMAIL_USER = os.environ["EMAIL_USER"]
+    EMAIL_PASS = os.environ["EMAIL_PASS"]
+    EMAIL_RECEIVER = os.environ["EMAIL_RECEIVER"]
 
     msg = EmailMessage()
     msg["From"] = EMAIL_USER
