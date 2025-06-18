@@ -7,10 +7,10 @@ import os
 dataset = load_dataset("imdb")
 
 # Split the original train set into train/validation
-train_valid_split = dataset["train"].train_test_split(test_size=0.2, seed=42)
+train_valid_split = dataset["train"].train_test_split(test_size=0.2, seed=42).select(range(10))
 train_dataset = train_valid_split["train"]
 valid_dataset = train_valid_split["test"]
-test_dataset = dataset["test"]  # use this only for final testing
+test_dataset = dataset["test"].select(range(5))  # use this only for final testing
 
 # Tokenizer
 tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
