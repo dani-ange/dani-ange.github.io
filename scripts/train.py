@@ -35,7 +35,8 @@ training_args = TrainingArguments(
     save_strategy="epoch",
     load_best_model_at_end=True,
     metric_for_best_model="accuracy",
-    logging_strategy="epoch"
+    logging_strategy="epoch",
+    report_to="none"  # Disable wandb reporting
 )
 
 # Trainer
