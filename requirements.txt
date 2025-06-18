@@ -1,1 +1,4 @@
-ECHO is on.
+transformers
+datasets
+scikit-learn
+huggingface_hub

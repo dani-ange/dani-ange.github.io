@@ -1,1 +1,41 @@
-ECHO is on.
+name : sentiment analysis workflow
+
+on: 
+ push: 
+  branches: [main,dev]
+jobs:
+ build and deploy:
+  runs-on: ubuntu-latest
+  env:
+   THRESHOLD_SCORE: ${{secrets.THRESHOLD_SCORE}}
+   HF_TOKEN: ${{secrets.HF_TOKEN}}
+   EMAIL_USER: ${{secrets.EMAIL_USER}}
+   EMAIL_PASS: ${{secrets.EMAIL_PASS}}
+   EMAIL_RECEIVER: ${{secrets.EMAIL_RECEIVER}}
+
+   steps:
+    - name: checkout repo
+      uses: actions/checkout@v3
+
+    - name : set-up python
+      uses : actions/setup-python@v4
+      with: 
+        python-version: '3.10'
+
+
+    - name: initialising dependencies
+      run: |
+       python -m pip install -r requirements.txt
+
+    - name: model training 
+      run: scripts/train.py
+
+    - name: model evaluation
+      run: scripts/evaluate.py
+
+    - name: model check and deployment
+      run : scripts/deploy.py
+    
+    - name: mail sending 
+      run : scripts/send_email.py
+
