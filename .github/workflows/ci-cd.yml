@@ -38,7 +38,16 @@ jobs:
 
     - name: model check and deployment
       run : python scripts/deploy.py
-    
+    - name: generate doc
+      run: |
+        mkdir -p doc
+        python -m pydoc -w script/train.py
+        python -m pydoc -w script/evaluate.py
+        python -m pydoc -w script/deploy.py
+        mv training.html  evaluation.html  deploy.html doc/
+    - name: zip and bundle the model plus doc
+      run : zip -r bundle.zip /models /doc
+      
     - name: mail sending 
       run : python scripts/send_email.py
 

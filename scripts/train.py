@@ -17,6 +17,15 @@ test_dataset = dataset["test"].select(range(10))  # use this only for final test
 tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
 
 def tokenize(batch):
+    """
+    Tokenizes a batch of text data using the DistilBERT tokenizer.
+
+    Args:
+        batch (dict): A dictionary containing a "text" field with a list of strings.
+
+    Returns:
+        dict: A dictionary with tokenized inputs, including input IDs and attention masks.
+    """
     return tokenizer(batch["text"], padding=True, truncation=True)
 
 train_dataset = train_dataset.map(tokenize, batched=True)
@@ -24,7 +33,17 @@ valid_dataset = valid_dataset.map(tokenize, batched=True)
 
 # Load model
 model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
+
 def compute_metrics(eval_pred):
+    """
+    Computes evaluation metrics for the model.
+
+    Args:
+        eval_pred (tuple): A tuple containing model logits and true labels.
+
+    Returns:
+        dict: A dictionary with accuracy and F1 score.
+    """
     logits, labels = eval_pred
     predictions = logits.argmax(axis=-1)
     return {
@@ -53,8 +72,7 @@ trainer = Trainer(
     args=training_args,
     train_dataset=train_dataset,
     eval_dataset=valid_dataset,
-    compute_metrics=compute_metrics,  # <-- add this line
-
+    compute_metrics=compute_metrics,
 )
 
 # Train and save model
