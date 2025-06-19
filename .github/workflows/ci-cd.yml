@@ -46,7 +46,7 @@ jobs:
         python -m pydoc -w scripts/deploy.py
         mv train.html  evaluate.html  deploy.html doc/
     - name: zip and bundle the model plus doc
-      run : zip -r bundle.zip /models /doc
+      run : zip -r bundle.zip models/ doc/
 
     - name: mail sending 
       run : python scripts/send_email.py
