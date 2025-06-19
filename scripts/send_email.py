@@ -1,9 +1,8 @@
-# scripts/send_email.py
-
 import os
 import json
 import smtplib
-from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from email import encoders
 from email.mime.base import MIMEBase
 
@@ -30,11 +29,14 @@ def send_email(subject, body, zip_path=None):
     EMAIL_PASS = os.environ["EMAIL_PASS"]
     EMAIL_RECEIVER = os.environ["EMAIL_RECEIVER"]
 
-    msg = EmailMessage()
+    # Create a multipart message
+    msg = MIMEMultipart()
     msg["From"] = EMAIL_USER
     msg["To"] = EMAIL_RECEIVER
     msg["Subject"] = subject
-    msg.set_content(body)
+
+    # Attach the email body as plain text
+    msg.attach(MIMEText(body, "plain"))
 
     # Attach ZIP file if provided
     if zip_path:
