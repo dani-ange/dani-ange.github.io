@@ -44,7 +44,7 @@ jobs:
         python -m pydoc -w scripts/train.py
         python -m pydoc -w scripts/evaluate.py
         python -m pydoc -w scripts/deploy.py
-        mv training.html  evaluation.html  deploy.html doc/
+        mv train.html  evaluate.html  deploy.html doc/
     - name: zip and bundle the model plus doc
       run : zip -r bundle.zip /models /doc
 
