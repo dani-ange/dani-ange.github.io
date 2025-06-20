@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Training Log</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans p-6">
+  <div class="max-w-4xl mx-auto bg-white rounded shadow p-6">
+    <h1 class="text-2xl font-bold mb-4">📈 DistilBERT Training Log</h1>
+    <table class="min-w-full table-auto border border-gray-300">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="px-4 py-2 text-left">Step</th>
+          <th class="px-4 py-2 text-left">Epoch</th>
+          <th class="px-4 py-2 text-left">Loss</th>
+          <th class="px-4 py-2 text-left">Eval Accuracy</th>
+          <th class="px-4 py-2 text-left">Eval F1</th>
+        </tr>
+      </thead>
+      <tbody id="log-body" class="bg-white">
+        <!-- Rows will be filled by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    fetch("log.json")
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.getElementById("log-body");
+        data.forEach(entry => {
+          const row = document.createElement("tr");
+          row.className = "border-t border-gray-200";
+
+          const step = entry.step ?? "";
+          const epoch = entry.epoch ?? "";
+          const loss = entry.loss ?? "";
+          const acc = entry.eval_accuracy ?? "";
+          const f1 = entry.f1 ?? entry.eval_f1 ?? "";
+
+          row.innerHTML = `
+            <td class="px-4 py-2">${step}</td>
+            <td class="px-4 py-2">${epoch}</td>
+            <td class="px-4 py-2">${loss}</td>
+            <td class="px-4 py-2">${acc}</td>
+            <td class="px-4 py-2">${f1}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch(err => {
+        document.getElementById("log-body").innerHTML =
+          '<tr><td colspan="5" class="px-4 py-2 text-red-500">Error loading log: ' + err + '</td></tr>';
+      });
+  </script>
+</body>
+</html>
