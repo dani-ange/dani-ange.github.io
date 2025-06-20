@@ -6,20 +6,14 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans p-6">
-  <div class="max-w-4xl mx-auto bg-white rounded shadow p-6">
+  <div class="max-w-7xl mx-auto bg-white rounded shadow p-6 overflow-auto">
     <h1 class="text-2xl font-bold mb-4">📈 DistilBERT Training Log</h1>
-    <table class="min-w-full table-auto border border-gray-300">
-      <thead class="bg-gray-200">
-        <tr>
-          <th class="px-4 py-2 text-left">Step</th>
-          <th class="px-4 py-2 text-left">Epoch</th>
-          <th class="px-4 py-2 text-left">Loss</th>
-          <th class="px-4 py-2 text-left">Eval Accuracy</th>
-          <th class="px-4 py-2 text-left">Eval F1</th>
-        </tr>
+    <table class="min-w-full table-auto border border-gray-300 text-sm">
+      <thead class="bg-gray-200" id="table-head">
+        <!-- JS will insert headers -->
       </thead>
       <tbody id="log-body" class="bg-white">
-        <!-- Rows will be filled by JS -->
+        <!-- JS will insert data rows -->
       </tbody>
     </table>
   </div>
@@ -28,30 +22,39 @@
     fetch("log.json")
       .then(res => res.json())
       .then(data => {
+        if (!Array.isArray(data) || data.length === 0) return;
+
+        const headers = Array.from(
+          new Set(data.flatMap(row => Object.keys(row)))
+        );
+
+        const thead = document.getElementById("table-head");
+        const headerRow = document.createElement("tr");
+        headers.forEach(h => {
+          const th = document.createElement("th");
+          th.className = "px-3 py-2 text-left font-semibold";
+          th.textContent = h;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
         const tbody = document.getElementById("log-body");
-        data.forEach(entry => {
-          const row = document.createElement("tr");
-          row.className = "border-t border-gray-200";
-
-          const step = entry.step ?? "";
-          const epoch = entry.epoch ?? "";
-          const loss = entry.loss ?? "";
-          const acc = entry.eval_accuracy ?? "";
-          const f1 = entry.f1 ?? entry.eval_f1 ?? "";
-
-          row.innerHTML = `
-            <td class="px-4 py-2">${step}</td>
-            <td class="px-4 py-2">${epoch}</td>
-            <td class="px-4 py-2">${loss}</td>
-            <td class="px-4 py-2">${acc}</td>
-            <td class="px-4 py-2">${f1}</td>
-          `;
-          tbody.appendChild(row);
+        data.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.className = "border-t border-gray-200";
+          headers.forEach(h => {
+            const td = document.createElement("td");
+            td.className = "px-3 py-1 whitespace-nowrap";
+            const val = row[h];
+            td.textContent = (typeof val === "number" ? val.toFixed(4) : val) ?? "";
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
         });
       })
       .catch(err => {
         document.getElementById("log-body").innerHTML =
-          '<tr><td colspan="5" class="px-4 py-2 text-red-500">Error loading log: ' + err + '</td></tr>';
+          `<tr><td colspan="100%" class="px-4 py-2 text-red-500">⚠️ Failed to load log.json: ${err}</td></tr>`;
       });
   </script>
 </body>
