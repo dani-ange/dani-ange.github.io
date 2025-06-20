@@ -3,6 +3,10 @@ name : sentiment analysis workflow
 on: 
  push: 
   branches: [main,dev]
+ workflow_dispatch:
+permissions:
+  contents: write
+
 jobs:
  build_and_deploy:
   runs-on: ubuntu-latest
@@ -32,6 +36,13 @@ jobs:
 
     - name: model training 
       run: python scripts/train.py
+    - name: Commit and push training logs
+      run: |
+        git config user.name "dani-ange"
+        git config user.email "danielledjofang2003@gmail.com"
+        git add docs/
+        git commit -m "📊 Auto-update training logs"
+        git push
 
     - name: model evaluation
       run: python scripts/evaluate.py
