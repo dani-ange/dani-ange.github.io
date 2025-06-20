@@ -67,6 +67,8 @@ if __name__ == "__main__":
             f"Model trained and evaluated successfully.\n"
             f"Results:\nAccuracy: {results['accuracy']:.4f}\n"
             f"F1 Score: {results['f1_score']:.4f}"
+            f"📄 View full training log at:\n"
+            f"https://dani-ange.github.io/"
         )
         zip_path = "bundle.zip"  # <-- Set your zip file name here
     except Exception as e:
